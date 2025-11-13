@@ -99,23 +99,24 @@ def solve(board, pieces, piece_shapes, used, mark_index=0):
         board.print()
         return True
 
-    x, y = empty
+    x, y = empty  # 选择当前左上角第一个空格
     for name, count in pieces.items():
         if used[name] >= count:
             continue
 
         for shape in piece_shapes[name]:
-            for dx, dy in product(range(board.w), range(board.h)):
-                if board.can_place(shape, dx, dy):
-                    color_index = mark_index % len(COLORS)
-                    board.place(shape, dx, dy, color_index)
-                    used[name] += 1
+            # 尝试从 (x, y) 开始放置当前形状
+            if board.can_place(shape, x, y):
+                color_index = mark_index % len(COLORS)
+                board.place(shape, x, y, color_index)
+                used[name] += 1
 
-                    if solve(board, pieces, piece_shapes, used, mark_index + 1):
-                        return True
+                if solve(board, pieces, piece_shapes, used, mark_index + 1):
+                    return True
 
-                    used[name] -= 1
-                    board.remove(shape, dx, dy)
+                used[name] -= 1
+                board.remove(shape, x, y)
+
     return False
 
 # --------------------------
@@ -123,14 +124,14 @@ def solve(board, pieces, piece_shapes, used, mark_index=0):
 # --------------------------
 if __name__ == "__main__":
     # ========== 参数配置 ==========
-    board_size = (5, 5)
+    board_size = (6, 6)
     pieces = {
-        "L3": 3,
-        "L4": 0,
+        "L3": 4,
+        "L4": 1,
         "I4": 1,
-        "O4": 2,
-        "T4": 0,
-        "Z4": 1,
+        "O4": 1,
+        "T4": 1,
+        "Z4": 2,
     }
 
     # ===== 可行性检查 =====
