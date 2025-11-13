@@ -30,6 +30,26 @@ def generate_variants(shape):
     return [list(v) for v in variants]
 
 # --------------------------
+# 彩色方块生成器
+# --------------------------
+COLORS = [
+    "\033[41m  \033[0m",  # 红
+    "\033[42m  \033[0m",  # 绿
+    "\033[44m  \033[0m",  # 蓝
+    "\033[43m  \033[0m",  # 黄
+    "\033[45m  \033[0m",  # 紫
+    "\033[46m  \033[0m",  # 青
+    "\033[101m  \033[0m", # 亮红
+    "\033[102m  \033[0m", # 亮绿
+    "\033[104m  \033[0m", # 亮蓝
+    "\033[105m  \033[0m", # 亮紫
+    "\033[106m  \033[0m", # 亮青
+    "\033[100m  \033[0m", # 灰
+]
+
+EMPTY = "⬜"
+
+# --------------------------
 # 棋盘类
 # --------------------------
 class Board:
@@ -64,8 +84,9 @@ class Board:
         return all(all(cell is not None for cell in row) for row in self.grid)
 
     def print(self):
+        print()
         for row in self.grid:
-            print(' '.join(c if c else '⬜' for c in row))
+            print("".join(COLORS[c] if c is not None else EMPTY for c in row))
         print()
 
 # --------------------------
@@ -86,8 +107,8 @@ def solve(board, pieces, piece_shapes, used, mark_index=0):
         for shape in piece_shapes[name]:
             for dx, dy in product(range(board.w), range(board.h)):
                 if board.can_place(shape, dx, dy):
-                    mark = chr(65 + mark_index % 26)  # A, B, C...
-                    board.place(shape, dx, dy, mark)
+                    color_index = mark_index % len(COLORS)
+                    board.place(shape, dx, dy, color_index)
                     used[name] += 1
 
                     if solve(board, pieces, piece_shapes, used, mark_index + 1):
@@ -107,17 +128,24 @@ if __name__ == "__main__":
         "L3": 3,
         "L4": 0,
         "I4": 1,
-        "O4": 1,
-        "T4": 1,
+        "O4": 2,
+        "T4": 0,
         "Z4": 1,
     }
+
+    # ===== 可行性检查 =====
+    area_board = board_size[0] * board_size[1]
+    area_pieces = sum(len(SHAPES[name]) * count for name, count in pieces.items())
+    if area_board != area_pieces:
+        print(f"❌ 无法满布：棋盘面积 {area_board} ≠ 方块总面积 {area_pieces}")
+        exit(0)
 
     # ========== 初始化 ==========
     piece_shapes = {k: generate_variants(v) for k, v in SHAPES.items()}
     used = {k: 0 for k in pieces}
     board = Board(*board_size)
 
-    print(f"开始搜索 {board_size[0]}x{board_size[1]} 的平铺方案...\n")
+    print(f"\n🎮 开始搜索 {board_size[0]}x{board_size[1]} 的平铺方案...\n")
     found = solve(board, pieces, piece_shapes, used)
 
     if not found:
