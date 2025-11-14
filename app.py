@@ -38,7 +38,7 @@ def handle_solve():
             "expected_format": {
                 "width": "integer (positive)",
                 "height": "integer (positive)",
-                "pieces": {"SHAPE_NAME": "count", ...}
+                "pieces": "A dictionary, e.g. {'L4': 2, 'I4': 2}"
             }
         }), 400 # 400 Bad Request
 
