@@ -1,20 +1,16 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS  # 1. 导入 CORS
+from flask_cors import CORS
 from solver_logic import find_solution
 
 # 初始化 Flask app
 app = Flask(__name__)
 
-# [!] 2. 配置 CORS
-CORS(app, resources={
-    r"/solve": {
-        "origins": [
-            "http://localhost:3000",
-            "https://ppll.top",
-            "https://popeyang.github.io"
-        ]
-    }
-})
+# 配置 CORS
+CORS(app, origins=[
+    "http://localhost:3000",      # 允许本地开发
+    "https://ppll.top",           # 允许你的自定义域名
+    "https://popeyang.github.io"  # 允许 GitHub Pages 的实际域名
+])
 
 
 @app.route('/')
