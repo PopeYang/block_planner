@@ -9,8 +9,9 @@ app = Flask(__name__)
 CORS(app, resources={
     r"/solve": {
         "origins": [
-            "http://localhost:3000",        # 允许本地开发
-            "https://popeyang.github.io"   # 允许 GitHub Pages 域名
+            "http://localhost:3000",
+            "https://ppll.top",
+            "https://popeyang.github.io"
         ]
     }
 })
