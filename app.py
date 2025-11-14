@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app, origins=[
     "http://localhost:3000",      # 允许本地开发
     "https://ppll.top",           # 允许你的自定义域名
-    "https://popeyang.github.io"  # 允许 GitHub Pages 的实际域名
+    "https://github.io"           # 允许 GitHub Pages
 ])
 
 
