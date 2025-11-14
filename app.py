@@ -1,16 +1,16 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS  # 1. 导入 CORS
 from solver_logic import find_solution
 
 # 初始化 Flask app
 app = Flask(__name__)
 
-# [!] 配置 CORS
+# [!] 2. 配置 CORS
 CORS(app, resources={
     r"/solve": {
         "origins": [
-            "http://localhost:3000",  # 允许本地开发
-            "https://ppll.top"        # 允许你的博客
+            "http://localhost:3000",        # 允许本地开发
+            "https://popeyang.github.io"   # 允许 GitHub Pages 域名
         ]
     }
 })
@@ -38,7 +38,7 @@ def handle_solve():
         # 2. 解析输入
         width = int(data.get('width'))
         height = int(data.get('height'))
-        pieces = data.get('pieces') # 这是一个字典, e.g. {"L4": 2, ...}
+        pieces = data.get('pieces') 
 
         if not all([isinstance(width, int), isinstance(height, int), isinstance(pieces, dict)]):
              raise ValueError("Invalid input types.")
@@ -54,7 +54,7 @@ def handle_solve():
                 "height": "integer (positive)",
                 "pieces": "A dictionary, e.g. {'L4': 2, 'I4': 2}"
             }
-        }), 400 # 400 Bad Request
+        }), 400 
 
     # 3. 调用核心逻辑
     print(f"API: Received job for {width}x{height} with pieces: {pieces}")
@@ -67,15 +67,14 @@ def handle_solve():
             "message": message,
             "board_size": f"{width}x{height}",
             "solution": solution_grid
-        }), 200 # 200 OK
+        }), 200 
     else:
-        # 即使"未找到解", 请求本身也是成功的
         return jsonify({
             "status": "failure",
             "message": message,
             "board_size": f"{width}x{height}",
             "solution": None
-        }), 200 # 200 OK
+        }), 200
 
 
 # 允许从本地运行 (e.g. `python app.py`)
